@@ -1,0 +1,28 @@
+---
+abstract: 'Test non-perl code with Fennec'
+author:
+  - 'Chad Granum <exodist7@gmail.com>'
+configure_requires:
+  Module::Build: 0.36
+generated_by: 'Module::Build version 0.3607'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Fennec-External
+provides:
+  Fennec::External:
+    file: lib/Fennec/External.pm
+    version: 0.001
+  Fennec::External::C:
+    file: lib/Fennec/External/C.pm
+  Fennec::External::C::Raw:
+    file: lib/Fennec/External/C/Raw.pm
+requires:
+  Fennec: 0.027
+  File::Which: 0
+resources:
+  bugtracker: http://github.com/exodist/Fennec-External/issues
+  license: http://dev.perl.org/licenses/
+  repository: http://github.com/exodist/Fennec-External
+version: 0.001
