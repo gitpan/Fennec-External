@@ -13,7 +13,7 @@ name: Fennec-External
 provides:
   Fennec::External:
     file: lib/Fennec/External.pm
-    version: 0.001
+    version: 0.002
   Fennec::External::C:
     file: lib/Fennec/External/C.pm
   Fennec::External::C::Raw:
@@ -25,4 +25,4 @@ resources:
   bugtracker: http://github.com/exodist/Fennec-External/issues
   license: http://dev.perl.org/licenses/
   repository: http://github.com/exodist/Fennec-External
-version: 0.001
+version: 0.002
