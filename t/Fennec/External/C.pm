@@ -53,6 +53,7 @@ void ok( int result, char* name ) {
     else {
         printf("not ok - %s\n", name);
     }
+    fflush(stdout);
 }
 
 int main(void) {

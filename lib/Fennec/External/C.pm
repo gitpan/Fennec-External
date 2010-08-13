@@ -5,10 +5,11 @@ use Fennec::External 'testc';
 use File::Temp qw/ tempfile /;
 use Fennec::Runner qw/ add_config /;
 use Fennec::Util::Accessors;
+use Fennec::Output::Note;
 use Carp;
 
-add_config $_ for qw/ c_compiler c_compiler_args c_includes /;
-Accessors qw/ c_compiler c_compiler_args no_tap_merge c_includes /;
+add_config $_ for qw/ c_compiler c_compiler_args c_includes c_library_paths c_include_paths /;
+Accessors qw/ c_compiler c_compiler_args no_tap_merge c_includes c_library_paths c_include_paths /;
 
 sub execute {
     my $self = shift;
@@ -43,16 +44,27 @@ sub execute {
     die "Could not find compiled file $outfile!"
         unless -e $outfile;
 
-    my $TAP = `./$outfile`;
-    my $out = !$?;
+    $cmd = "./$outfile";
+
+    if ( my @paths = ( @{ Fennec::Runner->c_library_paths || []}, @{ $self->c_library_paths || [] })) {
+        push @paths => $ENV{LD_LIBRARY_PATH}
+            if $ENV{LD_LIBRARY_PATH};
+        $cmd = "LD_LIBRARY_PATH="
+             . join(':', @paths )
+             . " $cmd";
+    }
+
+    open( my $proc, '-|', $cmd ) || die( $! );
+
+    while ( my $line = <$proc> ) {
+        print "#C STDOUT: $line";
+        $self->merge_tap( $line ) unless $self->no_tap_merge;
+    }
 
     unlink( $infile );
     unlink( $outfile );
 
-    $self->merge_tap( $TAP )
-        unless $self->no_tap_merge;
-
-    return $out;
+    return 1;
 }
 
 sub template {
@@ -71,6 +83,7 @@ void ok( int result, char* name ) {
     else {
         printf("not ok - %s\\n", name);
     }
+    fflush(stdout);
 }
 
 int main(void) {
